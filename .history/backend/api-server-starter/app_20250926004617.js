@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 // const userRouter = require("./routes/userRouter");
-const jobRouter = require('./routes/jobRouter');
+const jobRoutes = require('./routes/jobRoutes');
 const { unknownEndpoint,errorHandler } = require("./middleware/customMiddleware");
 const connectDB = require("./config/db");
 const cors = require("cors");
@@ -21,7 +21,7 @@ connectDB();
 
 //using jobRouter for job routes
 
-app.use('/api/jobs', jobRouter);
+app.use('/api/jobs', jobRoutes);
 
 app.use(unknownEndpoint);
 app.use(errorHandler);

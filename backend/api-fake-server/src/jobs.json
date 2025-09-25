@@ -41,6 +41,20 @@
         "contactEmail": "contact@ipsumlorem.com",
         "contactPhone": "555-555-5555"
       }
+    },
+    {
+      "id": "e228",
+      "title": "Frontend Developer",
+      "type": "Full-Time",
+      "location": "Remote",
+      "description": "Work with React.js",
+      "salary": "60000",
+      "company": {
+        "name": "Tech Corp",
+        "description": "Software Company",
+        "contactEmail": "hr@techcorp.com",
+        "contactPhone": "1234890"
+      }
     }
   ]
 }
