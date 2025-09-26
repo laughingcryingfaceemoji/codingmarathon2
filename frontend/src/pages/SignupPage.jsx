@@ -46,7 +46,7 @@ const submitForm = async (e) => {
   };
 
   try {
-    const res = await fetch('/api/users/register', {
+    const res = await fetch('/api/users/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newUser),
