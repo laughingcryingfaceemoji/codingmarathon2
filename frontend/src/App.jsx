@@ -29,8 +29,10 @@ const App = () => {
 
   // Delete Job
   const deleteJob = async (id) => {
-    const res = await fetch(`/api/jobs/${id}`, {
+    const token = localStorage.getItem('authToken');
+    await fetch(`/api/jobs/${id}`, {
       method: 'DELETE',
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     });
     return;
   };

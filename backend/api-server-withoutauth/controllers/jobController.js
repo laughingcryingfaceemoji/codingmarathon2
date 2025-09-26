@@ -26,11 +26,10 @@ exports.getJobById = async (req, res) => {
     }
 };
 
-// Create a new job (Protected - requires authentication)
+// Create a new job (Public)
 exports.createJob = async (req, res) => {
     try {
-        // Associate the job with the logged-in user
-        const job = new Job({ ...req.body, user_id: req.user._id });
+        const job = new Job({ ...req.body });
         await job.save();
         res.status(201).json(job);
     } catch (err) {
@@ -39,7 +38,7 @@ exports.createJob = async (req, res) => {
     }
 };
 
-// Update an existing job (Protected - requires ownership)
+// Update an existing job (Public)
 exports.updateJob = async (req, res) => {
     const { id } = req.params;
 
@@ -49,12 +48,12 @@ exports.updateJob = async (req, res) => {
 
     try {
         const job = await Job.findOneAndUpdate(
-            { _id: id, user_id: req.user._id }, // Ensure the user owns the job
+            { _id: id },
             req.body,
             { new: true, runValidators: true }
         );
         if (!job) {
-            return res.status(404).json({ message: 'Job not found or user not authorized' });
+            return res.status(404).json({ message: 'Job not found' });
         }
         res.json(job);
     } catch (err) {
@@ -63,7 +62,7 @@ exports.updateJob = async (req, res) => {
     }
 };
 
-// Delete a job (Protected - requires ownership)
+// Delete a job (Public)
 exports.deleteJob = async (req, res) => {
     const { id } = req.params;
 
@@ -72,10 +71,10 @@ exports.deleteJob = async (req, res) => {
     }
 
     try {
-        const job = await Job.findOneAndDelete({ _id: id, user_id: req.user._id }); // Ensure the user owns the job
+        const job = await Job.findOneAndDelete({ _id: id });
 
         if (!job) {
-            return res.status(404).json({ message: 'Job not found or user not authorized' });
+            return res.status(404).json({ message: 'Job not found' });
         }
         res.json({ message: 'Job deleted successfully' });
     } catch (err) {
