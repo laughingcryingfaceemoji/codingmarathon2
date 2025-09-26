@@ -1,8 +1,9 @@
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-const AddJobPage = () => {
+const AddJobPage = ({ refreshJobs }) => {
   const [title, setTitle] = useState('');
   const [type, setType] = useState('Full-Time');
   const [location, setLocation] = useState('');
@@ -17,6 +18,13 @@ const AddJobPage = () => {
 
   const submitForm = async (e) => {
     e.preventDefault();
+
+    // ✅ use the same key as login/signup
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      toast.error('You must be logged in to add a job');
+      return;
+    }
 
     const newJob = {
       title,
@@ -37,20 +45,23 @@ const AddJobPage = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`, // ✅ correct header
         },
         body: JSON.stringify(newJob),
       });
 
       if (res.ok) {
         toast.success('Job Added Successfully');
-        navigate('/jobs'); // go back to jobs list
+        if (refreshJobs) refreshJobs();
+        navigate('/jobs');
       } else {
-        const error = await res.json();
-        toast.error(error.message || 'Failed to add job');
+        const error = await res.json().catch(() => ({}));
+        const message = error.error || error.message || 'Failed to add job';
+        toast.error(message);
       }
     } catch (err) {
       console.error('Error submitting job:', err);
-      toast.error('Network error, please try again');
+      toast.error('Network/Server error, please try again');
     }
   };
 
@@ -63,12 +74,8 @@ const AddJobPage = () => {
 
             {/* Job Type */}
             <div className='mb-4'>
-              <label htmlFor='type' className='block text-gray-700 font-bold mb-2'>
-                Job Type
-              </label>
+              <label className='block text-gray-700 font-bold mb-2'>Job Type</label>
               <select
-                id='type'
-                name='type'
                 className='border rounded w-full py-2 px-3'
                 required
                 value={type}
@@ -83,13 +90,9 @@ const AddJobPage = () => {
 
             {/* Job Title */}
             <div className='mb-4'>
-              <label className='block text-gray-700 font-bold mb-2'>
-                Job Listing Name
-              </label>
+              <label className='block text-gray-700 font-bold mb-2'>Job Listing Name</label>
               <input
                 type='text'
-                id='title'
-                name='title'
                 className='border rounded w-full py-2 px-3 mb-2'
                 placeholder='eg. Software Engineer'
                 required
@@ -100,28 +103,20 @@ const AddJobPage = () => {
 
             {/* Description */}
             <div className='mb-4'>
-              <label htmlFor='description' className='block text-gray-700 font-bold mb-2'>
-                Description
-              </label>
+              <label className='block text-gray-700 font-bold mb-2'>Description</label>
               <textarea
-                id='description'
-                name='description'
                 className='border rounded w-full py-2 px-3'
                 rows='4'
-                placeholder='Add any job duties, expectations, requirements, etc'
+                placeholder='Add job duties, expectations, requirements, etc'
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-              ></textarea>
+              />
             </div>
 
             {/* Salary */}
             <div className='mb-4'>
-              <label htmlFor='salary' className='block text-gray-700 font-bold mb-2'>
-                Salary
-              </label>
+              <label className='block text-gray-700 font-bold mb-2'>Salary</label>
               <select
-                id='salary'
-                name='salary'
                 className='border rounded w-full py-2 px-3'
                 required
                 value={salary}
@@ -143,13 +138,9 @@ const AddJobPage = () => {
 
             {/* Location */}
             <div className='mb-4'>
-              <label className='block text-gray-700 font-bold mb-2'>
-                Location
-              </label>
+              <label className='block text-gray-700 font-bold mb-2'>Location</label>
               <input
                 type='text'
-                id='location'
-                name='location'
                 className='border rounded w-full py-2 px-3 mb-2'
                 placeholder='Company Location'
                 required
@@ -162,13 +153,9 @@ const AddJobPage = () => {
 
             {/* Company Name */}
             <div className='mb-4'>
-              <label htmlFor='company' className='block text-gray-700 font-bold mb-2'>
-                Company Name
-              </label>
+              <label className='block text-gray-700 font-bold mb-2'>Company Name</label>
               <input
                 type='text'
-                id='company'
-                name='company'
                 className='border rounded w-full py-2 px-3'
                 placeholder='Company Name'
                 value={companyName}
@@ -178,29 +165,21 @@ const AddJobPage = () => {
 
             {/* Company Description */}
             <div className='mb-4'>
-              <label htmlFor='company_description' className='block text-gray-700 font-bold mb-2'>
-                Company Description
-              </label>
+              <label className='block text-gray-700 font-bold mb-2'>Company Description</label>
               <textarea
-                id='company_description'
-                name='company_description'
                 className='border rounded w-full py-2 px-3'
                 rows='4'
                 placeholder='What does your company do?'
                 value={companyDescription}
                 onChange={(e) => setCompanyDescription(e.target.value)}
-              ></textarea>
+              />
             </div>
 
             {/* Contact Email */}
             <div className='mb-4'>
-              <label htmlFor='contact_email' className='block text-gray-700 font-bold mb-2'>
-                Contact Email
-              </label>
+              <label className='block text-gray-700 font-bold mb-2'>Contact Email</label>
               <input
                 type='email'
-                id='contact_email'
-                name='contact_email'
                 className='border rounded w-full py-2 px-3'
                 placeholder='Email address for applicants'
                 required
@@ -211,13 +190,9 @@ const AddJobPage = () => {
 
             {/* Contact Phone */}
             <div className='mb-4'>
-              <label htmlFor='contact_phone' className='block text-gray-700 font-bold mb-2'>
-                Contact Phone
-              </label>
+              <label className='block text-gray-700 font-bold mb-2'>Contact Phone</label>
               <input
                 type='tel'
-                id='contact_phone'
-                name='contact_phone'
                 className='border rounded w-full py-2 px-3'
                 placeholder='Optional phone for applicants'
                 value={contactPhone}
