@@ -40,33 +40,6 @@ const LoginPage = ({ loginSubmit }) => {
     };
 
 
-   const submitForm = async (e) => {
-    e.preventDefault();
-
-    try {
-        const res = await fetch('/api/users/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password }),
-        });
-
-        if (res.ok) {
-            const data = await res.json();
-            // store token to localStorage using same key as signup
-            localStorage.setItem('authToken', data.token);
-            toast.success('Login Successful!');
-            navigate('/jobs'); // redirect after login
-        } else {
-            const error = await res.json().catch(() => ({}));
-            const message = error.error || error.message || 'Login failed';
-            toast.error(message);
-        }
-    } catch (err) {
-        console.error('Login error:', err);
-        toast.error('Server error. Please try again.');
-    }
-};
-
     return (
         <section className="bg-indigo-50">
             <div className="container m-auto max-w-md py-24">
