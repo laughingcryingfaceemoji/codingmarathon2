@@ -1,3 +1,6 @@
+
+
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import useSignup from './useSignup';
@@ -34,8 +37,14 @@ const SignupPage = () => {
       });
 
       if (res.ok) {
+        const data = await res.json();
+        // Store token so user is logged in immediately
+        if (data.token) {
+          localStorage.setItem('authToken', data.token);
+        }
+
         toast.success('Signup Successful!');
-        navigate('/login'); // redirect after success
+        navigate('/jobs'); // redirect to jobs page after signup/login
       } else {
         const error = await res.json().catch(() => ({}));
         const message = error.error || error.message || 'Signup failed';

@@ -22,6 +22,12 @@ connectDB();
 app.use('/api/users', userRouter);
 app.use('/api/jobs', jobRouter);
 
+// Simple health check endpoint for Render
+app.get('/', (_req, res) => {
+  // Health response to satisfy platform HTTP checks
+  res.status(200).send('OK');
+});
+
 
 app.use(unknownEndpoint);
 app.use(errorHandler);
