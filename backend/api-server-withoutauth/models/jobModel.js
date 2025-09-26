@@ -14,8 +14,7 @@ const jobSchema = new mongoose.Schema({
   location: { type: String, required: true },
   description: { type: String, required: true },
   salary: { type: String, required: true },
-  company: { type: companySchema, required: true },
-  user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
+  company: { type: companySchema, required: true }
 }, {
   timestamps: true // Automatically add createdAt and updatedAt fields
 });
