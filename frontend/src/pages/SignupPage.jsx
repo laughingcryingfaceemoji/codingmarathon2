@@ -13,7 +13,26 @@ const SignupPage = ({ signupSubmit }) => {
 
   const navigate = useNavigate();
 
-  const submitForm = (e) => {
+  //   const submitForm = (e) => {
+  //     e.preventDefault();
+
+  //     const newUser = {
+  //       name,
+  //       email,
+  //       password,
+  //       phone_number: phoneNumber,
+  //       gender,
+  //       date_of_birth: dateOfBirth,
+  //       membership_status: membershipStatus,
+  //     };
+
+  //     signupSubmit(newUser);
+
+  //     toast.success('Signup Successful!');
+  //     navigate('/login');
+  //   };
+
+  const submitForm = async (e) => {
     e.preventDefault();
 
     const newUser = {
@@ -26,11 +45,28 @@ const SignupPage = ({ signupSubmit }) => {
       membership_status: membershipStatus,
     };
 
-    signupSubmit(newUser);
+    try {
+      const res = await fetch('/api/users/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newUser),
+      });
 
-    toast.success('Signup Successful!');
-    navigate('/login');
+      if (res.ok) {
+        toast.success('Signup Successful!');
+        navigate('/login'); // redirect after success
+      } else {
+        // Show backend error consistently
+        const error = await res.json().catch(() => ({}));
+        const message = error.error || error.message || 'Signup failed';
+        toast.error(message);
+      }
+    } catch (err) {
+      console.error('Signup error:', err);
+      toast.error('Server error. Please try again.');
+    }
   };
+
 
   return (
     <section className="bg-indigo-50">
