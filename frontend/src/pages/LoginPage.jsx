@@ -24,8 +24,10 @@ const LoginPage = ({ loginSubmit }) => {
                 toast.success('Login Successful!');
                 navigate('/jobs'); // redirect after login
             } else {
-                const error = await res.json();
-                toast.error(error.message || 'Login failed');
+                // Surface backend error consistently
+                const error = await res.json().catch(() => ({}));
+                const message = error.error || error.message || 'Login failed';
+                toast.error(message);
             }
         } catch (err) {
             console.error('Login error:', err);
