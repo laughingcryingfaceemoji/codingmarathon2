@@ -6,7 +6,13 @@ const {
     createUser,
     updateUser,
     deleteUser,
+    loginUser,
 } = require("../controllers/userController");
+
+// Authenticate the user
+router.post("/signup", createUser);
+router.post("/login", loginUser);
+
 
 router.get("/", getAllUsers);
 router.post("/", createUser);

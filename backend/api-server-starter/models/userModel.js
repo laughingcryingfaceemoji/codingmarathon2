@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const validator = require("validator");
 
 const Schema = mongoose.Schema;
@@ -36,14 +36,14 @@ const userSchema = new Schema(
       required: true,
     },
   },
-  { timestamps: true, versionKey: false  }
+  { timestamps: true, versionKey: false }
 );
 
 
 // static signup method
-userSchema.statics.signup = async function (name, email, password,phone_number, gender, date_of_birth, membership_status) {
+userSchema.statics.signup = async function (name, email, password, phone_number, gender, date_of_birth, membership_status) {
   // console.log(name, email, password, phone_number, gender, date_of_birth, membership_status);
-  
+
   // validation
   if ((!name || !email || !password || !phone_number || !gender || !date_of_birth || !membership_status)) {
     throw Error("Please add all fields");
@@ -55,7 +55,7 @@ userSchema.statics.signup = async function (name, email, password,phone_number, 
     throw Error("Password not strong enough");
   }
 
- 
+
 
   const userExists = await this.findOne({ email });
 
