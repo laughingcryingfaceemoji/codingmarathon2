@@ -6,6 +6,7 @@ const {
     createUser,
     updateUser,
     deleteUser,
+    loginUser,
 } = require("../controllers/userController");
 
 // Authenticate the user
