@@ -1,4 +1,44 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
+
+// Register a new user
+const signToken = (_id) => jwt.sign({ _id }, process.env.SECRET, { expiresIn: '7d' });
+
+// POST /api/users/signup
+exports.createUser = async (req, res) => {
+    const { name, email, password, phone_number, gender, date_of_birth, membership_status } = req.body;
+
+    try {
+        const user = await User.create({ name, email, password, phone_number, gender, date_of_birth, membership_status });
+        const token = signToken(user._id);
+        res.status(201).json({ user, token });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+// POST /api/users/login
+exports.loginUser = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ error: 'User not found' });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ error: 'Invalid password' });
+        }
+
+        const token = signToken(user._id);
+        res.status(200).json({ user, token });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
 
 // Get all users
 exports.getAllUsers = async (req, res) => {
