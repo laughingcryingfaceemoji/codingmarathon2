@@ -2,7 +2,6 @@ require('dotenv').config()
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
-const userRouter = require("./routes/userRouter");
 const jobRouter = require('./routes/jobRouter');
 const { unknownEndpoint, errorHandler } = require("./middleware/customMiddleware");
 const connectDB = require("./config/db");
@@ -15,11 +14,7 @@ app.use(morgan("dev"));
 
 connectDB();
 
-// Use the userRouter for all /users routes
-
-
-//using jobRouter for job routes
-app.use('/api/users', userRouter);
+// Using jobRouter for job routes (no auth, no users in this service)
 app.use('/api/jobs', jobRouter);
 
 // Simple health check endpoint for Render
