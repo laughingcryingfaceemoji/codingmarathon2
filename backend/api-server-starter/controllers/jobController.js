@@ -3,7 +3,9 @@ const Job = require('../models/JobModel');
 // Get all jobs
 exports.getAllJobs = async (req, res) => {
     try {
-        const jobs = await Job.find().sort({ createdAt: -1 });
+        const limit = parseInt(req.query._limit);
+        const query = Job.find({}).sort({ createdAt: -1 });
+        const jobs = Number.isFinite(limit) ? await query.limit(limit) : await query;
         res.json(jobs);
     } catch (err) {
         console.error('Get all jobs error:', err.message);
