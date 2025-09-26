@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -12,25 +13,6 @@ const SignupPage = ({ signupSubmit }) => {
   const [membershipStatus, setMembershipStatus] = useState('Free');
 
   const navigate = useNavigate();
-
-  //   const submitForm = (e) => {
-  //     e.preventDefault();
-
-  //     const newUser = {
-  //       name,
-  //       email,
-  //       password,
-  //       phone_number: phoneNumber,
-  //       gender,
-  //       date_of_birth: dateOfBirth,
-  //       membership_status: membershipStatus,
-  //     };
-
-  //     signupSubmit(newUser);
-
-  //     toast.success('Signup Successful!');
-  //     navigate('/login');
-  //   };
 
   const submitForm = async (e) => {
     e.preventDefault();
@@ -53,10 +35,15 @@ const SignupPage = ({ signupSubmit }) => {
       });
 
       if (res.ok) {
+        const data = await res.json();
+        // Store token so user is logged in immediately
+        if (data.token) {
+          localStorage.setItem('authToken', data.token);
+        }
+
         toast.success('Signup Successful!');
-        navigate('/login'); // redirect after success
+        navigate('/jobs'); // redirect to jobs page after signup/login
       } else {
-        // Show backend error consistently
         const error = await res.json().catch(() => ({}));
         const message = error.error || error.message || 'Signup failed';
         toast.error(message);
@@ -66,7 +53,6 @@ const SignupPage = ({ signupSubmit }) => {
       toast.error('Server error. Please try again.');
     }
   };
-
 
   return (
     <section className="bg-indigo-50">
