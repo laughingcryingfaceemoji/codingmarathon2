@@ -1,48 +1,29 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import useSignup from './useSignup';
 
-const SignupPage = ({ signupSubmit }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [gender, setGender] = useState('Male');
-  const [dateOfBirth, setDateOfBirth] = useState('');
-  const [membershipStatus, setMembershipStatus] = useState('Free');
+const SignupPage = () => {
+  const name = useSignup('text');
+  const email = useSignup('email');
+  const password = useSignup('password');
+  const phoneNumber = useSignup('tel');
+  const gender = useSignup('text');
+  const dateOfBirth = useSignup('date');
+  const membershipStatus = useSignup('text');
 
   const navigate = useNavigate();
-
-  //   const submitForm = (e) => {
-  //     e.preventDefault();
-
-  //     const newUser = {
-  //       name,
-  //       email,
-  //       password,
-  //       phone_number: phoneNumber,
-  //       gender,
-  //       date_of_birth: dateOfBirth,
-  //       membership_status: membershipStatus,
-  //     };
-
-  //     signupSubmit(newUser);
-
-  //     toast.success('Signup Successful!');
-  //     navigate('/login');
-  //   };
 
   const submitForm = async (e) => {
     e.preventDefault();
 
     const newUser = {
-      name,
-      email,
-      password,
-      phone_number: phoneNumber,
-      gender,
-      date_of_birth: dateOfBirth,
-      membership_status: membershipStatus,
+      name: name.value,
+      email: email.value,
+      password: password.value,
+      phone_number: phoneNumber.value,
+      gender: gender.value,
+      date_of_birth: dateOfBirth.value,
+      membership_status: membershipStatus.value,
     };
 
     try {
@@ -56,7 +37,6 @@ const SignupPage = ({ signupSubmit }) => {
         toast.success('Signup Successful!');
         navigate('/login'); // redirect after success
       } else {
-        // Show backend error consistently
         const error = await res.json().catch(() => ({}));
         const message = error.error || error.message || 'Signup failed';
         toast.error(message);
@@ -66,7 +46,6 @@ const SignupPage = ({ signupSubmit }) => {
       toast.error('Server error. Please try again.');
     }
   };
-
 
   return (
     <section className="bg-indigo-50">
@@ -78,58 +57,50 @@ const SignupPage = ({ signupSubmit }) => {
             <div className="mb-4">
               <label className="block text-gray-700 font-bold mb-2">Name</label>
               <input
-                type="text"
+                {...name}
                 className="border rounded w-full py-2 px-3"
                 placeholder="Full Name"
                 required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
               />
             </div>
 
             <div className="mb-4">
               <label className="block text-gray-700 font-bold mb-2">Email</label>
               <input
-                type="email"
+                {...email}
                 className="border rounded w-full py-2 px-3"
-                placeholder="Email Address"
+                placeholder="you@domain.com"
                 required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
             <div className="mb-4">
               <label className="block text-gray-700 font-bold mb-2">Password</label>
               <input
-                type="password"
+                {...password}
                 className="border rounded w-full py-2 px-3"
                 placeholder="Password"
                 required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
 
             <div className="mb-4">
               <label className="block text-gray-700 font-bold mb-2">Phone Number</label>
               <input
-                type="tel"
+                {...phoneNumber}
                 className="border rounded w-full py-2 px-3"
-                placeholder="Phone Number"
-                required
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder="+1 555 555 5555"
               />
             </div>
 
             <div className="mb-4">
               <label className="block text-gray-700 font-bold mb-2">Gender</label>
               <select
+                {...gender}
                 className="border rounded w-full py-2 px-3"
-                value={gender}
-                onChange={(e) => setGender(e.target.value)}
+                value={gender.value}
               >
+                <option value="">Select</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
                 <option value="Other">Other</option>
@@ -139,20 +110,17 @@ const SignupPage = ({ signupSubmit }) => {
             <div className="mb-4">
               <label className="block text-gray-700 font-bold mb-2">Date of Birth</label>
               <input
-                type="date"
+                {...dateOfBirth}
                 className="border rounded w-full py-2 px-3"
-                required
-                value={dateOfBirth}
-                onChange={(e) => setDateOfBirth(e.target.value)}
               />
             </div>
 
             <div className="mb-4">
               <label className="block text-gray-700 font-bold mb-2">Membership Status</label>
               <select
+                {...membershipStatus}
                 className="border rounded w-full py-2 px-3"
-                value={membershipStatus}
-                onChange={(e) => setMembershipStatus(e.target.value)}
+                value={membershipStatus.value}
               >
                 <option value="Free">Free</option>
                 <option value="Premium">Premium</option>
